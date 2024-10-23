@@ -19,6 +19,7 @@ def mainLoop(sciNameList):
     for sciName in sciNameList:
         try:
             simulation.queryAndExportSciDetail(sciName)
+            logs.enhanceLog(f"导出期刊文章成功： {sciName}")
             succeededSciNameList.append(sciName)
         except Exception as e:
             logs.enhanceLog(f"导出期刊文章失败： {sciName}, error is {e}")
