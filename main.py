@@ -34,19 +34,24 @@ def clearTmpFiles():
             logs.enhanceLog(f"删除文件失败： {fullPathName}, error is {e}")
 
 
+def readTxtFile():
+    pass
+
+
 if __name__ == '__main__':
     print("hello sci!")
 
     # 从本地load 配置
     cfgs.loadCfgs()
 
+
     # 创建导出目录结构
-
-    # load所有待加载的期刊名称列表
-    sciNameList = readTxtFile()
-
-    # 清理临时下载目录
-    clearTmpFiles()
     #
-    mainLoop()
+    # # load所有待加载的期刊名称列表
+    # sciNameList = readTxtFile()
+    #
+    # # 清理临时下载目录
+    # clearTmpFiles()
+    # #
+    # mainLoop()
 
