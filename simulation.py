@@ -259,7 +259,7 @@ def selectCustomContentSelection():
 
 
 def isTmpFileDownloaded():
-    fullPathName = cfgs.get("export", "defaultExportedFilePath") + cfgs.get("export", "defaultExportedFileName")
+    fullPathName = cfgs.get("defaultExportedFilePath", "export") + cfgs.get("defaultExportedFileName", "export")
     return os.path.isfile(fullPathName) and os.path.exists(fullPathName)
 
 
@@ -290,9 +290,9 @@ def clickExport():
 
 def renameAndMoveExportedFile(sciName):
 
-    sourceFileFullPathName = cfgs.get("export", "defaultExportedFilePath") + cfgs.get("export", "defaultExportedFileName")
+    sourceFileFullPathName = cfgs.get("defaultExportedFilePath", "export", ) + cfgs.get("defaultExportedFileName", "export", )
 
-    targetFileFullPathName = cfgs.get("export", "exportedFileBasePath") + sciName
+    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + sciName
 
     shutil.move(sourceFileFullPathName, targetFileFullPathName)
 

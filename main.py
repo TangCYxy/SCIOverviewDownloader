@@ -26,7 +26,7 @@ def mainLoop(sciNameList):
             exportFailedSciNameList.append(sciName)
 
 def clearTmpFiles():
-    fullPathName = defaultExportedFilePath + defaultExportedFileName
+    fullPathName = cfgs.get("defaultExportedFilePath", "export", ) + cfgs.get("defaultExportedFileName", "export", )
     if os.path.isfile(fullPathName):
         try:
             os.remove(fullPathName)
@@ -35,7 +35,15 @@ def clearTmpFiles():
 
 
 def readTxtFile():
-    pass
+    sciPublicationNames = []
+    filePath = cfgs.get("sciPublicationNamesPosition", "input", "./config/sciPublicationNames.txt")
+    # print(filePath)
+    # filePath2 = "config/sciPublicationNames.txt"
+    # print(filePath2)
+    with open(filePath, "r", encoding="utf-8") as f:
+        for line in f:
+            sciPublicationNames.append(line.strip())
+    return sciPublicationNames
 
 
 if __name__ == '__main__':
@@ -46,12 +54,12 @@ if __name__ == '__main__':
 
 
     # 创建导出目录结构
+
+    # load所有待加载的期刊名称列表
+    sciNameList = readTxtFile()
+
+    # 清理临时下载目录
+    clearTmpFiles()
     #
-    # # load所有待加载的期刊名称列表
-    # sciNameList = readTxtFile()
-    #
-    # # 清理临时下载目录
-    # clearTmpFiles()
-    # #
-    # mainLoop()
+    mainLoop(sciNameList)
 
