@@ -41,6 +41,7 @@ def clickAddRow():
 
         time.sleep(1)
 
+        print("try click add row")
         # 点击condition 2 的输入框(三次点击，直接框选内容，如果有）
         pyautogui.tripleClick(cfgs.getInt("firstCondition2AddRowX"), cfgs.getInt("firstCondition2AddRowY"), interval=0.3)
         time.sleep(1)
@@ -71,8 +72,8 @@ def selectConditionPublicationName():
         x, y = utils.findColor(cfgs.getInt("firstCondition2SelectedCheckX1"), cfgs.getInt("firstCondition2SelectedCheckY1"),
                                cfgs.getInt("firstCondition2SelectedCheckX2"), cfgs.getInt("firstCondition2SelectedCheckY2"),
                                cfgs.get("firstCondition2SelectedCheckColor"), 0.9)
-        if x is not None and y is not None:
-            # 都不为0，说明当前已经打开了下拉菜单
+        if x is None and y is None:
+            #
             print("first: condition 2 'Publication/Source Titles' is selected!")
             break
 
@@ -86,7 +87,7 @@ def selectConditionPublicationName():
 def inputSciPublicationNames(sciName):
     # 点击输入框（选中时有紫色边框）
     while (True):
-        # 检查当前是否已经打开了下拉菜单
+        # 检查
         x, y = utils.findColor(cfgs.getInt("firstCondition2ClickedCheckX1"), cfgs.getInt("firstCondition2ClickedCheckY1"),
                                cfgs.getInt("firstCondition2ClickedCheckX2"), cfgs.getInt("firstCondition2ClickedCheckY2"),
                                cfgs.get("firstCondition2ClickedCheckColor"), 0.9)
@@ -104,42 +105,43 @@ def inputSciPublicationNames(sciName):
     # 输入数据
     pyautogui.write(sciName, interval=0.3)
     time.sleep(1)
-    print("first: condition 2 value is input, data is {}" % sciName)
+    print("first: condition 2 value is input, data is %s" % sciName)
 
 
 def selectRecommendationContent(sciName):
     # 等待10s，尝试得到推荐（输入框左侧有阴影样式，以及看不到下方的输入框蓝色的边框线了
-    maxTryCount = cfgs.getInt("maxPublicationNameRecommendationTryCount")
+    maxTryCount = cfgs.getInt("maxPublicationNameRecommendationTryCount", "common", )
     recommendationDisplayed = False
     while maxTryCount > 0:
         maxTryCount = maxTryCount - 1
-        # 检查颜色
-        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationCheckX1"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckY1"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckX2"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckY2"),
-                               cfgs.get("firstCondition2InputRecommendationCheckColor"), 0.9)
+        # 检查颜色(有点不好识别，降低了confidence要求）
+        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationShownCheckX1"),
+                               cfgs.getInt("firstCondition2InputRecommendationShownCheckY1"),
+                               cfgs.getInt("firstCondition2InputRecommendationShownCheckX2"),
+                               cfgs.getInt("firstCondition2InputRecommendationShownCheckY2"),
+                               cfgs.get("firstCondition2InputRecommendationShownCheckColor"), 0.8)
         if x is not None and y is not None:
-            # 找不到输入框的蓝色下边框了
-            time.sleep(1)
-        else:
+            #
             print("first: publication title recommendation displayed!")
             recommendationDisplayed = True
             break
+        else:
+            print("first: waiting recommendation shown!")
+            time.sleep(5)
 
     # 判断是否已经找到了推荐的期刊名
     if not recommendationDisplayed:
-        logs.enhanceLog("can not get recommendation for sci {}, manually check is needed" % sciName)
+        logs.enhanceLog("can not get recommendation for sci %s, manually check is needed" % sciName)
         pyautogui.alert('请手动确认网络和登录状态是否正常！')
 
     # 点击推荐项
     while (True):
         # 推荐窗口不再存在
-        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationCheckX1"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckY1"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckX2"),
-                               cfgs.getInt("firstCondition2InputRecommendationCheckY2"),
-                               cfgs.get("firstCondition2InputRecommendationCheckColor"), 0.9)
+        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationClickedCheckX1"),
+                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY1"),
+                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckX2"),
+                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY2"),
+                               cfgs.get("firstCondition2InputRecommendationClickedCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，ok
             print("first: condition 2 publication title recommendation is selected")
@@ -174,16 +176,17 @@ def openExportExcelDialog():
                                cfgs.getInt("exportButtonExpandCheckY1"),
                                cfgs.getInt("exportButtonExpandCheckX2"),
                                cfgs.getInt("exportButtonExpandCheckY2"),
-                               cfgs.getInt("exportButtonExpandCheckColor"), 0.9)
+                               cfgs.get("exportButtonExpandCheckColor"), 0.9)
         # 如果出现了下拉菜单，跳出
-        if x is not None and y is not None:
+        if x is None and y is None:
             # 都不为0，ok
             print("export: export menu expanded")
+            time.sleep(2)
             break
         else:
             pyautogui.click(cfgs.getInt("exportButtonExpandClickX"), cfgs.get("exportButtonExpandClickY"),
                             interval=0.3)
-            time.sleep(1)
+            time.sleep(2)
 
     # 点击菜单中对应的excel选项，打开二级对话框
     while (True):
@@ -236,7 +239,8 @@ def selectCustomContentSelection():
             print("export dialog: record content menu expanded!")
             break
         else:
-            pyautogui.click(cfgs.getInt("exportDialogRecordContentExpandClickX"), cfgs.getInt("exportDialogRecordContentExpandClickY"),
+            pyautogui.click(cfgs.getInt("exportDialogRecordContentExpandClickX"),
+                            cfgs.getInt("exportDialogRecordContentExpandClickY"),
                             interval=0.3)
             time.sleep(1)
 
@@ -253,7 +257,8 @@ def selectCustomContentSelection():
             print("export dialog: record content selection changed!")
             break
         else:
-            pyautogui.click(cfgs.getInt("exportDialogRecordContentMenuClickX"), cfgs.getInt("exportDialogRecordContentMenuClickY"),
+            pyautogui.click(cfgs.getInt("exportDialogRecordContentMenuClickX"),
+                            cfgs.getInt("exportDialogRecordContentMenuClickY"),
                             interval=0.3)
             time.sleep(1)
 
@@ -271,14 +276,14 @@ def clickExport():
             logs.enhanceLog("export: file exported")
             break
 
-        # 检查导出按钮是否已经按下（正在导出中）——一部分文字变成了背景色
+        # 检查导出按钮是否已经按下（正在导出中）——一按钮变短了
         x, y = utils.findColor(cfgs.getInt("exportButtonExportingCheckX1"),
                                cfgs.getInt("exportButtonExportingCheckY1"),
                                cfgs.getInt("exportButtonExportingCheckX2"),
                                cfgs.getInt("exportButtonExportingCheckY2"),
                                cfgs.get("exportButtonExportingCheckColor"), 0.9)
-        # 如果出现了下拉菜单，跳出
-        if x is not None and y is not None:
+        #
+        if x is None and y is None:
             # 都不为0
             print("export: is exporting, wait every 2 seconds")
             time.sleep(2)
@@ -292,11 +297,11 @@ def renameAndMoveExportedFile(sciName):
 
     sourceFileFullPathName = cfgs.get("defaultExportedFilePath", "export", ) + cfgs.get("defaultExportedFileName", "export", )
 
-    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + sciName
+    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + sciName + ".csv"
 
     shutil.move(sourceFileFullPathName, targetFileFullPathName)
 
-    logs.enhanceLog("sci overview downloaded for sci {} as file {}" % {sciName, targetFileFullPathName})
+    logs.enhanceLog("sci overview downloaded for sci %s as file %s" % (sciName, targetFileFullPathName))
 
 def exportSearchResult(sciName):
     # 点击export，直到export导出列表弹出
@@ -325,7 +330,7 @@ def doInputSciYear(yearStr):
     """
     # 点击输入框（选中时有紫色边框）
     while (True):
-        # 检查当前是否已经打开了下拉菜单
+        # 检查当前是否已经选中了输入框
         x, y = utils.findColor(cfgs.getInt("firstCondition1ClickedCheckX1"), cfgs.getInt("firstCondition1ClickedCheckY1"),
                                cfgs.getInt("firstCondition1ClickedCheckX2"), cfgs.getInt("firstCondition1ClickedCheckY2"),
                                cfgs.get("firstCondition1ClickedCheckColor"), 0.9)
@@ -343,7 +348,7 @@ def doInputSciYear(yearStr):
     # 输入数据
     pyautogui.write(yearStr, interval=0.3)
     time.sleep(1)
-    print("first: condition 1 value is input, data is {}" % yearStr)
+    print("first: condition 1 value is input, data is %s" % yearStr)
 
 
 def selectConditionYear():
@@ -370,8 +375,8 @@ def selectConditionYear():
         x, y = utils.findColor(cfgs.getInt("firstCondition1SelectedCheckX1"), cfgs.getInt("firstCondition1SelectedCheckY1"),
                                cfgs.getInt("firstCondition1SelectedCheckX2"), cfgs.getInt("firstCondition1SelectedCheckY2"),
                                cfgs.get("firstCondition1SelectedCheckColor"), 0.9)
-        if x is not None and y is not None:
-            # 都不为0，说明当前已经打开了下拉菜单
+        if x is None and y is None:
+            # 说明当前已经选中（下拉列表已经找不到了）
             print("first: condition 1 'Year Published' is selected!")
             break
 
@@ -399,11 +404,11 @@ def firstClickSearch():
                                  cfgs.getInt("firstCondition2SearchingCheck1X2"),
                                  cfgs.getInt("firstCondition2SearchingCheck1Y2"),
                                  cfgs.get("firstCondition2SearchingCheck1Color"), 0.9)
-        # 如果出现了结果页，说明出现了搜索结果，跳出
-        if x1 is not None and y1 is not None:
+        #
+        if x1 is None and y1 is None:
             # 都不为0，ok
             print("first: search ok")
-            time.sleep(1)
+            time.sleep(5)
             break
 
         # search按钮是否还是亮的（代表没有在搜索）
@@ -416,7 +421,7 @@ def firstClickSearch():
         if x2 is not None and y2 is not None:
             pyautogui.click(cfgs.getInt("firstCondition2SearchButtonX"), cfgs.getInt("firstCondition2SearchButtonY"),
                             interval=0.3)
-            time.sleep(1)
+            time.sleep(2)
         else:
             # 搜索中
             print("first: searching, wait every 2 seconds")
@@ -437,7 +442,7 @@ def firstQueryAndExportSciDetail(sciName):
     # 点击搜索
     firstClickSearch()
     # 确保相关的article列表已经列出来了（搜索结果已展示）
-    # ensureArticleListShows()
+    #ensureArticleListShows()
     # 点击export
     exportSearchResult(sciName)
 

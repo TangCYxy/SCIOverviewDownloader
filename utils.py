@@ -5,7 +5,7 @@ import math
 
 max_color_distance = math.sqrt(3 * (255 ** 2))
 
-def findColor(x1, y1, x2, y2, targetColorStr, confidence):
+def findColor(x1, y1, x2, y2, targetColorStr: str, confidence):
     """
     避免框选了太大的图像，导致遍历像素点太麻烦（后期可以改并发）
     :param x1:
@@ -17,7 +17,7 @@ def findColor(x1, y1, x2, y2, targetColorStr, confidence):
     :return:
     """
     img = pyautogui.screenshot(region=(x1, y1, x2, y2))
-    img.show()
+ #   img.show()
     targetColor = []
     targetColor.append(int(targetColorStr[4:6], 16))
     targetColor.append(int(targetColorStr[2:4], 16))
