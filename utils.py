@@ -32,5 +32,5 @@ def findColor(x1, y1, x2, y2, targetColorStr: str, confidence):
             distance = math.sqrt((targetColor[0] - r) ** 2 + (targetColor[1] - g) ** 2 + (targetColor[2] - b) ** 2)
             simularity = (1 - distance / max_color_distance)
             if simularity > confidence:
-                return x, y
-    return None, None
+                return x, y, "%02x%02x%02x" % (b, g, r)
+    return None, None, None

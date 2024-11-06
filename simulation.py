@@ -12,9 +12,9 @@ import utils
 
 def ensureAtFirstQueryPage(sciName):
     # 判断左上角的search按钮是否有下划线，有就是first页面
-    x, y = utils.findColor(cfgs.getInt("firstQueryPageCheckX1"), cfgs.getInt("firstQueryPageCheckY1"),
-                           cfgs.getInt("firstQueryPageCheckX2"), cfgs.getInt("firstQueryPageCheckY2"),
-                           cfgs.get("firstQueryPageCheckColor"), 0.9)
+    x, y, color = utils.findColor(cfgs.getInt("firstQueryPageCheckX1"), cfgs.getInt("firstQueryPageCheckY1"),
+                                  cfgs.getInt("firstQueryPageCheckX2"), cfgs.getInt("firstQueryPageCheckY2"),
+                                  cfgs.get("firstQueryPageCheckColor"), 0.9)
     if x is not None and y is not None:
         # 都不为0，说明找到了图片
         logs.enhanceLog("already in the first query page")
@@ -31,21 +31,22 @@ def clickAddRow():
     """
     while (True):
         # 左侧出现一个“移除额外规则”的符号，检测是否存在
-        x, y = utils.findColor(cfgs.getInt("firstCondition2AddedCheckX1"), cfgs.getInt("firstCondition2AddedCheckY1"),
-                               cfgs.getInt("firstCondition2AddedCheckX2"), cfgs.getInt("firstCondition2AddedCheckY2"),
-                               cfgs.get("firstCondition2AddedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2AddedCheckX1"),
+                                      cfgs.getInt("firstCondition2AddedCheckY1"),
+                                      cfgs.getInt("firstCondition2AddedCheckX2"),
+                                      cfgs.getInt("firstCondition2AddedCheckY2"),
+                                      cfgs.get("firstCondition2AddedCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("first: condition 2 row added")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         logs.enhanceLog("first: try click add row")
         # 点击condition 2 的输入框(三次点击，直接框选内容，如果有）
         pyautogui.tripleClick(cfgs.getInt("firstCondition2AddRowX"), cfgs.getInt("firstCondition2AddRowY"),
                               interval=0.3)
-        time.sleep(1)
+        time.sleep(2)
     logs.enhanceLog("first: condition 2 row added")
 
 
@@ -53,15 +54,16 @@ def selectConditionPublicationName():
     # 点击condition 2(expand condition 2)
     while (True):
         # 检查当前是否已经打开了下拉菜单
-        x, y = utils.findColor(cfgs.getInt("firstCondition2ExpandCheckX1"), cfgs.getInt("firstCondition2ExpandCheckY1"),
-                               cfgs.getInt("firstCondition2ExpandCheckX2"), cfgs.getInt("firstCondition2ExpandCheckY2"),
-                               cfgs.get("firstCondition2ExpandCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2ExpandCheckX1"),
+                                      cfgs.getInt("firstCondition2ExpandCheckY1"),
+                                      cfgs.getInt("firstCondition2ExpandCheckX2"),
+                                      cfgs.getInt("firstCondition2ExpandCheckY2"),
+                                      cfgs.get("firstCondition2ExpandCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，说明当前已经打开了下拉菜单
             logs.enhanceLog("first: condition 2 menu is expanded!")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击condition 1
         logs.enhanceLog("first: firstCondition2ExpandX")
@@ -71,17 +73,16 @@ def selectConditionPublicationName():
     # 选择 "publication/source title"
     while (True):
         # 检查当前condition是否已经folded
-        x, y = utils.findColor(cfgs.getInt("firstCondition2SelectedCheckX1"),
-                               cfgs.getInt("firstCondition2SelectedCheckY1"),
-                               cfgs.getInt("firstCondition2SelectedCheckX2"),
-                               cfgs.getInt("firstCondition2SelectedCheckY2"),
-                               cfgs.get("firstCondition2SelectedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2SelectedCheckX1"),
+                                      cfgs.getInt("firstCondition2SelectedCheckY1"),
+                                      cfgs.getInt("firstCondition2SelectedCheckX2"),
+                                      cfgs.getInt("firstCondition2SelectedCheckY2"),
+                                      cfgs.get("firstCondition2SelectedCheckColor"), 0.9)
         if x is None and y is None:
             #
             logs.enhanceLog("first: condition 2 'Publication/Source Titles' is selected!")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击"year published"
         logs.enhanceLog("first: firstCondition2SelectX")
@@ -93,17 +94,16 @@ def inputSciPublicationNames(sciName):
     # 点击输入框（选中时有紫色边框）
     while (True):
         # 检查
-        x, y = utils.findColor(cfgs.getInt("firstCondition2ClickedCheckX1"),
-                               cfgs.getInt("firstCondition2ClickedCheckY1"),
-                               cfgs.getInt("firstCondition2ClickedCheckX2"),
-                               cfgs.getInt("firstCondition2ClickedCheckY2"),
-                               cfgs.get("firstCondition2ClickedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2ClickedCheckX1"),
+                                      cfgs.getInt("firstCondition2ClickedCheckY1"),
+                                      cfgs.getInt("firstCondition2ClickedCheckX2"),
+                                      cfgs.getInt("firstCondition2ClickedCheckY2"),
+                                      cfgs.get("firstCondition2ClickedCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("first: condition 2 input box is selected")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击condition 2 的输入框(三次点击，直接框选内容，如果有）
         logs.enhanceLog("first: firstCondition2InputX")
@@ -123,15 +123,16 @@ def selectRecommendationContent(sciName):
     while maxTryCount > 0:
         maxTryCount = maxTryCount - 1
         # 检查颜色(有点不好识别，降低了confidence要求）
-        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationShownCheckX1"),
-                               cfgs.getInt("firstCondition2InputRecommendationShownCheckY1"),
-                               cfgs.getInt("firstCondition2InputRecommendationShownCheckX2"),
-                               cfgs.getInt("firstCondition2InputRecommendationShownCheckY2"),
-                               cfgs.get("firstCondition2InputRecommendationShownCheckColor"), 0.8)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationShownCheckX1"),
+                                      cfgs.getInt("firstCondition2InputRecommendationShownCheckY1"),
+                                      cfgs.getInt("firstCondition2InputRecommendationShownCheckX2"),
+                                      cfgs.getInt("firstCondition2InputRecommendationShownCheckY2"),
+                                      cfgs.get("firstCondition2InputRecommendationShownCheckColor"), 0.8)
         if x is not None and y is not None:
             #
             logs.enhanceLog("first: publication title recommendation displayed!")
             recommendationDisplayed = True
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("first: waiting recommendation shown!")
@@ -144,18 +145,22 @@ def selectRecommendationContent(sciName):
 
     # 点击推荐项
     while (True):
-        # 推荐窗口不再存在
-        x, y = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationClickedCheckX1"),
-                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY1"),
-                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckX2"),
-                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY2"),
-                               cfgs.get("firstCondition2InputRecommendationClickedCheckColor"), 0.9)
-        if x is not None and y is not None:
+        # 推荐窗口不再存在(input box2 不再被选中）
+        # x, y, color = utils.findColor(cfgs.getInt("firstCondition2InputRecommendationClickedCheckX1"),
+        #                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY1"),
+        #                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckX2"),
+        #                               cfgs.getInt("firstCondition2InputRecommendationClickedCheckY2"),
+        #                               cfgs.get("firstCondition2InputRecommendationClickedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2ClickedCheckX1"),
+                                      cfgs.getInt("firstCondition2ClickedCheckY1"),
+                                      cfgs.getInt("firstCondition2ClickedCheckX2"),
+                                      cfgs.getInt("firstCondition2ClickedCheckY2"),
+                                      cfgs.get("firstCondition2ClickedCheckColor"), 0.9)
+        if x is None and y is None:
             # 都不为0，ok
             logs.enhanceLog("first: condition 2 publication title recommendation is selected")
+            time.sleep(2)
             break
-
-        time.sleep(1)
 
         # 点击condition 2 的推荐项
         logs.enhanceLog("first: firstCondition2InputRecommendationClickX")
@@ -181,11 +186,11 @@ def inputSciName(sciName):
 def openExportExcelDialog():
     # 点击export按钮, 看到下拉菜单
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportButtonExpandCheckX1"),
-                               cfgs.getInt("exportButtonExpandCheckY1"),
-                               cfgs.getInt("exportButtonExpandCheckX2"),
-                               cfgs.getInt("exportButtonExpandCheckY2"),
-                               cfgs.get("exportButtonExpandCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportButtonExpandCheckX1"),
+                                      cfgs.getInt("exportButtonExpandCheckY1"),
+                                      cfgs.getInt("exportButtonExpandCheckX2"),
+                                      cfgs.getInt("exportButtonExpandCheckY2"),
+                                      cfgs.get("exportButtonExpandCheckColor"), 0.9)
         # 如果出现了下拉菜单，跳出
         if x is None and y is None:
             # 都不为0，ok
@@ -200,15 +205,16 @@ def openExportExcelDialog():
 
     # 点击菜单中对应的excel选项，打开二级对话框
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
-                               cfgs.getInt("exportDialogDisplayCheckY1"),
-                               cfgs.getInt("exportDialogDisplayCheckX2"),
-                               cfgs.getInt("exportDialogDisplayCheckY2"),
-                               cfgs.get("exportDialogDisplayCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
+                                      cfgs.getInt("exportDialogDisplayCheckY1"),
+                                      cfgs.getInt("exportDialogDisplayCheckX2"),
+                                      cfgs.getInt("exportDialogDisplayCheckY2"),
+                                      cfgs.get("exportDialogDisplayCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export: export sub dialog displayed!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportMenuClickX")
@@ -220,15 +226,16 @@ def openExportExcelDialog():
 def selectAllDisplayedRecords():
     # 点击records from x to x 的单选框
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogAllRecordSelectedCheckX1"),
-                               cfgs.getInt("exportDialogAllRecordSelectedCheckY1"),
-                               cfgs.getInt("exportDialogAllRecordSelectedCheckX2"),
-                               cfgs.getInt("exportDialogAllRecordSelectedCheckY2"),
-                               cfgs.get("exportDialogAllRecordSelectedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogAllRecordSelectedCheckX1"),
+                                      cfgs.getInt("exportDialogAllRecordSelectedCheckY1"),
+                                      cfgs.getInt("exportDialogAllRecordSelectedCheckX2"),
+                                      cfgs.getInt("exportDialogAllRecordSelectedCheckY2"),
+                                      cfgs.get("exportDialogAllRecordSelectedCheckColor"), 0.9)
         # 如果出现了下拉菜单，跳出
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: all records selected")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogAllRecordClickX")
@@ -240,15 +247,16 @@ def selectAllDisplayedRecords():
 def selectCustomContentSelection():
     # 打开下拉列表框——点击records content下拉列表框，如果出现了蓝色的选中颜色，则说明已打开
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogRecordContentExpandedCheckX1"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckY1"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckX2"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckY2"),
-                               cfgs.get("exportDialogRecordContentExpandedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogRecordContentExpandedCheckX1"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckY1"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckX2"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckY2"),
+                                      cfgs.get("exportDialogRecordContentExpandedCheckColor"), 0.9)
         # 如果出现了下拉菜单，跳出
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: record content menu expanded!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogRecordContentExpandClickX")
@@ -259,15 +267,16 @@ def selectCustomContentSelection():
 
     # 选择"custom selection"——回到了export的dialog页面
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
-                               cfgs.getInt("exportDialogDisplayCheckY1"),
-                               cfgs.getInt("exportDialogDisplayCheckX2"),
-                               cfgs.getInt("exportDialogDisplayCheckY2"),
-                               cfgs.get("exportDialogDisplayCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
+                                      cfgs.getInt("exportDialogDisplayCheckY1"),
+                                      cfgs.getInt("exportDialogDisplayCheckX2"),
+                                      cfgs.getInt("exportDialogDisplayCheckY2"),
+                                      cfgs.get("exportDialogDisplayCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: record content selection changed!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogRecordContentMenuClickX")
@@ -280,15 +289,16 @@ def selectCustomContentSelection():
 def selectCustomContentSelectionAndRefreshLatestCustomOptions():
     # 打开下拉列表框——点击records content下拉列表框，如果出现了蓝色的选中颜色，则说明已打开
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogRecordContentExpandedCheckX1"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckY1"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckX2"),
-                               cfgs.getInt("exportDialogRecordContentExpandedCheckY2"),
-                               cfgs.get("exportDialogRecordContentExpandedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogRecordContentExpandedCheckX1"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckY1"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckX2"),
+                                      cfgs.getInt("exportDialogRecordContentExpandedCheckY2"),
+                                      cfgs.get("exportDialogRecordContentExpandedCheckColor"), 0.9)
         # 如果出现了下拉菜单，跳出
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: record content menu expanded!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogRecordContentExpandClickX")
@@ -299,15 +309,16 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelectionChoosePageCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelectionChoosePageCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelectionChoosePageCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: custom export select page displayed!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogCustomExportSelectionEditClickX")
@@ -320,11 +331,11 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelection7_11ChosenCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelection7_11ChosenCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelection7_11ChosenCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
@@ -339,11 +350,11 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelection8_11ChosenCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelection8_11ChosenCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelection8_11ChosenCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
@@ -358,11 +369,11 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelection9_11ChosenCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelection9_11ChosenCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelection9_11ChosenCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
@@ -377,11 +388,11 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelection10_11ChosenCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelection10_11ChosenCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelection10_11ChosenCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
@@ -396,11 +407,11 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"custom selection"的custom的edit按钮
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckX1"),
-                               cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckY1"),
-                               cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckX2"),
-                               cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckY2"),
-                               cfgs.get("exportDialogCustomExportSelection11_11ChosenCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckX1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckY1"),
+                                      cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckX2"),
+                                      cfgs.getInt("exportDialogCustomExportSelection11_11ChosenCheckY2"),
+                                      cfgs.get("exportDialogCustomExportSelection11_11ChosenCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
@@ -415,15 +426,16 @@ def selectCustomContentSelectionAndRefreshLatestCustomOptions():
 
     # 选择"save"——回到了export的dialog页面
     while (True):
-        x, y = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
-                               cfgs.getInt("exportDialogDisplayCheckY1"),
-                               cfgs.getInt("exportDialogDisplayCheckX2"),
-                               cfgs.getInt("exportDialogDisplayCheckY2"),
-                               cfgs.get("exportDialogDisplayCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportDialogDisplayCheckX1"),
+                                      cfgs.getInt("exportDialogDisplayCheckY1"),
+                                      cfgs.getInt("exportDialogDisplayCheckX2"),
+                                      cfgs.getInt("exportDialogDisplayCheckY2"),
+                                      cfgs.get("exportDialogDisplayCheckColor"), 0.9)
         # 如果出现了export对话框，ok
         if x is not None and y is not None:
             # 都不为0，ok
             logs.enhanceLog("export dialog: record content selection changed!")
+            time.sleep(1)
             break
         else:
             logs.enhanceLog("export: exportDialogCustomExportSelectionSaveClickX")
@@ -444,14 +456,15 @@ def clickExport():
         # 先看下目标文件是否已经存在，如果存在，则说明下载完毕
         if isTmpFileDownloaded():
             logs.enhanceLog("export: file exported")
+            time.sleep(1)
             break
 
         # 检查导出按钮是否已经按下（正在导出中）——一按钮变短了
-        x, y = utils.findColor(cfgs.getInt("exportButtonExportingCheckX1"),
-                               cfgs.getInt("exportButtonExportingCheckY1"),
-                               cfgs.getInt("exportButtonExportingCheckX2"),
-                               cfgs.getInt("exportButtonExportingCheckY2"),
-                               cfgs.get("exportButtonExportingCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("exportButtonExportingCheckX1"),
+                                      cfgs.getInt("exportButtonExportingCheckY1"),
+                                      cfgs.getInt("exportButtonExportingCheckX2"),
+                                      cfgs.getInt("exportButtonExportingCheckY2"),
+                                      cfgs.get("exportButtonExportingCheckColor"), 0.9)
         #
         if x is None and y is None:
             # 都不为0
@@ -507,17 +520,16 @@ def doInputSciYear(yearStr):
     # 点击输入框（选中时有紫色边框）
     while (True):
         # 检查当前是否已经选中了输入框
-        x, y = utils.findColor(cfgs.getInt("firstCondition1ClickedCheckX1"),
-                               cfgs.getInt("firstCondition1ClickedCheckY1"),
-                               cfgs.getInt("firstCondition1ClickedCheckX2"),
-                               cfgs.getInt("firstCondition1ClickedCheckY2"),
-                               cfgs.get("firstCondition1ClickedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition1ClickedCheckX1"),
+                                      cfgs.getInt("firstCondition1ClickedCheckY1"),
+                                      cfgs.getInt("firstCondition1ClickedCheckX2"),
+                                      cfgs.getInt("firstCondition1ClickedCheckY2"),
+                                      cfgs.get("firstCondition1ClickedCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，说明当前已经打开了下拉菜单
             logs.enhanceLog("first: condition 1 input box is selected")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击condition 2 的输入框(三次点击，直接框选内容，如果有）
         logs.enhanceLog("first: firstCondition1InputX")
@@ -534,15 +546,16 @@ def selectConditionYear():
     # 点击condition 1(expand condition 1)
     while (True):
         # 检查当前是否已经打开了下拉菜单
-        x, y = utils.findColor(cfgs.getInt("firstCondition1ExpandCheckX1"), cfgs.getInt("firstCondition1ExpandCheckY1"),
-                               cfgs.getInt("firstCondition1ExpandCheckX2"), cfgs.getInt("firstCondition1ExpandCheckY2"),
-                               cfgs.get("firstCondition1ExpandCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition1ExpandCheckX1"),
+                                      cfgs.getInt("firstCondition1ExpandCheckY1"),
+                                      cfgs.getInt("firstCondition1ExpandCheckX2"),
+                                      cfgs.getInt("firstCondition1ExpandCheckY2"),
+                                      cfgs.get("firstCondition1ExpandCheckColor"), 0.9)
         if x is not None and y is not None:
             # 都不为0，说明当前已经打开了下拉菜单
             logs.enhanceLog("first: condition 1 menu is expanded!")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击condition 1
         logs.enhanceLog("first: firstCondition1ExpandX")
@@ -552,17 +565,16 @@ def selectConditionYear():
     # 选择year published
     while (True):
         # 检查当前condition是否已经folded
-        x, y = utils.findColor(cfgs.getInt("firstCondition1SelectedCheckX1"),
-                               cfgs.getInt("firstCondition1SelectedCheckY1"),
-                               cfgs.getInt("firstCondition1SelectedCheckX2"),
-                               cfgs.getInt("firstCondition1SelectedCheckY2"),
-                               cfgs.get("firstCondition1SelectedCheckColor"), 0.9)
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition1SelectedCheckX1"),
+                                      cfgs.getInt("firstCondition1SelectedCheckY1"),
+                                      cfgs.getInt("firstCondition1SelectedCheckX2"),
+                                      cfgs.getInt("firstCondition1SelectedCheckY2"),
+                                      cfgs.get("firstCondition1SelectedCheckColor"), 0.9)
         if x is None and y is None:
             # 说明当前已经选中（下拉列表已经找不到了）
             logs.enhanceLog("first: condition 1 'Year Published' is selected!")
+            time.sleep(1)
             break
-
-        time.sleep(1)
 
         # 点击"year published"
         logs.enhanceLog("first: firstCondition1SelectX")
@@ -582,11 +594,11 @@ def firstClickSearch():
     # 点击search按钮，要么能看到searching，代表正在搜索中，要么看到左上角已经进入了搜索结果页，否则继续搜索
     while (True):
         # search页面的title是否还能找到底色（进入结果页）
-        x1, y1 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck1X1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1Y1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1X2"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1Y2"),
-                                 cfgs.get("firstCondition2SearchingCheck1Color"), 0.9)
+        x1, y1, color1 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck1X1"),
+                                         cfgs.getInt("firstCondition2SearchingCheck1Y1"),
+                                         cfgs.getInt("firstCondition2SearchingCheck1X2"),
+                                         cfgs.getInt("firstCondition2SearchingCheck1Y2"),
+                                         cfgs.get("firstCondition2SearchingCheck1Color"), 0.9)
         #
         if x1 is None and y1 is None:
             # 都不为0，ok
@@ -595,28 +607,28 @@ def firstClickSearch():
             break
 
         # search按钮是否还是亮的（代表没有在搜索）
-        x2, y2 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck2X1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck2Y1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck2X2"),
-                                 cfgs.getInt("firstCondition2SearchingCheck2Y2"),
-                                 cfgs.get("firstCondition2SearchingCheck2Color"), 0.9)
+        x2, y2, color2 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck2X1"),
+                                         cfgs.getInt("firstCondition2SearchingCheck2Y1"),
+                                         cfgs.getInt("firstCondition2SearchingCheck2X2"),
+                                         cfgs.getInt("firstCondition2SearchingCheck2Y2"),
+                                         cfgs.get("firstCondition2SearchingCheck2Color"), 0.9)
         # 如果出现了未点击的搜索按钮，就选择点击
         if x2 is not None and y2 is not None:
             logs.enhanceLog("first: firstCondition2SearchButtonX")
             pyautogui.click(cfgs.getInt("firstCondition2SearchButtonX"), cfgs.getInt("firstCondition2SearchButtonY"),
                             interval=0.3)
-            time.sleep(5)
         else:
             # 搜索中
             logs.enhanceLog("first: searching, wait every 5 seconds")
+        time.sleep(5)
 
 
 def ensureArticleListShowsAndNoErrorPageShows(sciName):
-    x1, y1 = utils.findColor(cfgs.getInt("exportSearchResultShownCheckX1"),
-                             cfgs.getInt("exportSearchResultShownCheckY1"),
-                             cfgs.getInt("exportSearchResultShownCheckX2"),
-                             cfgs.getInt("exportSearchResultShownCheckY2"),
-                             cfgs.get("exportSearchResultShownCheckColor"), 0.9)
+    x1, y1, color = utils.findColor(cfgs.getInt("exportSearchResultShownCheckX1"),
+                                    cfgs.getInt("exportSearchResultShownCheckY1"),
+                                    cfgs.getInt("exportSearchResultShownCheckX2"),
+                                    cfgs.getInt("exportSearchResultShownCheckY2"),
+                                    cfgs.get("exportSearchResultShownCheckColor"), 0.9)
     if x1 is None and y1 is None:
         logs.enhanceLog("first: unknown error shown, try click back to home")
         #
@@ -626,16 +638,15 @@ def ensureArticleListShowsAndNoErrorPageShows(sciName):
         logs.enhanceLog("first: search result successfully shown")
 
 
-
 def turnBackToFirstQueryPage(sciName):
     # 点击search按钮，要么能看到searching，代表正在搜索中，要么看到左上角已经进入了搜索结果页，否则继续搜索
     while (True):
         # search页面的title是否还能找到底色（进入结果页）
-        x1, y1 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck1X1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1Y1"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1X2"),
-                                 cfgs.getInt("firstCondition2SearchingCheck1Y2"),
-                                 cfgs.get("firstCondition2SearchingCheck1Color"), 0.9)
+        x1, y1, color = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck1X1"),
+                                        cfgs.getInt("firstCondition2SearchingCheck1Y1"),
+                                        cfgs.getInt("firstCondition2SearchingCheck1X2"),
+                                        cfgs.getInt("firstCondition2SearchingCheck1Y2"),
+                                        cfgs.get("firstCondition2SearchingCheck1Color"), 0.9)
         #
         if x1 is not None and y1 is not None:
             # 都不为0，ok
@@ -669,10 +680,10 @@ def firstQueryAndExportSciDetail(sciName):
     # 暂停个1，2s
     time.sleep(2)
 
+
 def queryAndExportSciDetail(sciName):
     if isSciNameAlreadyExported(sciName):
         logs.enhanceLog("sci overview already downloaded for sci %s " % (sciName))
         return
     # 如果已经存在，就忽略
     firstQueryAndExportSciDetail(sciName)
-
