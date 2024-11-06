@@ -1,6 +1,7 @@
 """
 按照之前的脚本，分结构
 """
+import time
 import traceback
 
 import cfgs
@@ -60,6 +61,11 @@ if __name__ == '__main__':
 
     # 从本地load 配置
     cfgs.loadCfgs()
+
+    # #
+    # logs.enhanceLog("can not continue due to not at first query page for sci %s" % "abcde")
+
+    time.sleep(2)
 
     # print(cfgs.getInt("exportButtonExpandCheckColor"))
     # x, y = utils.findColor(cfgs.getInt("exportButtonExpandCheckX1"),
