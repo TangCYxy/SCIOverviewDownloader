@@ -19,8 +19,10 @@ exportFailedSciNameList = []
 succeededSciNameList = []
 
 
-def mainLoop(sciNameList):
-    for sciName in sciNameList:
+def mainLoop(sciNameList, startRow=None):
+    for i, sciName in enumerate(sciNameList):
+        if startRow is not None and i <= startRow:
+            continue
         try:
             simulation.queryAndExportSciDetail(sciName)
             logs.enhanceLog(f"导出期刊文章成功： {sciName}")
@@ -29,6 +31,7 @@ def mainLoop(sciNameList):
             logs.enhanceLog(f"导出期刊文章失败： {sciName}, error is {e}")
             traceback.print_exc()
             exportFailedSciNameList.append(sciName)
+
 
 def clearTmpFiles():
     fullPathName = cfgs.get("defaultExportedFilePath", "export", ) + cfgs.get("defaultExportedFileName", "export", )
@@ -82,5 +85,4 @@ if __name__ == '__main__':
     # 清理临时下载目录
     clearTmpFiles()
     #
-    mainLoop(sciNameList)
-
+    mainLoop(sciNameList, startRow=904)

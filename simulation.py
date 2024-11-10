@@ -9,6 +9,8 @@ import pyautogui
 import cfgs
 import utils
 
+pyautogui.FAILSAFE=False
+
 
 def ensureAtFirstQueryPage(sciName):
     # 判断左上角的search按钮是否有下划线，有就是first页面
@@ -476,11 +478,24 @@ def clickExport():
             time.sleep(1)
 
 
+def filterFileName(sciName):
+    sciName = sciName.replace("\\", "-")
+    sciName = sciName.replace("/", "-")
+    sciName = sciName.replace(":", "-")
+    sciName = sciName.replace("*", "-")
+    sciName = sciName.replace("?", "-")
+    sciName = sciName.replace("\"", "-")
+    sciName = sciName.replace("<", "-")
+    sciName = sciName.replace(">", "-")
+    sciName = sciName.replace("|", "-")
+    return sciName
+
+
 def renameAndMoveExportedFile(sciName):
     sourceFileFullPathName = cfgs.get("defaultExportedFilePath", "export", ) + cfgs.get("defaultExportedFileName",
                                                                                         "export", )
 
-    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + sciName + ".csv"
+    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + filterFileName(sciName) + ".csv"
 
     shutil.move(sourceFileFullPathName, targetFileFullPathName)
 
@@ -488,7 +503,7 @@ def renameAndMoveExportedFile(sciName):
 
 
 def isSciNameAlreadyExported(sciName):
-    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + sciName + ".csv"
+    targetFileFullPathName = cfgs.get("exportedFileBasePath", "export", ) + filterFileName(sciName) + ".csv"
     return os.path.exists(targetFileFullPathName) and os.path.isfile(targetFileFullPathName)
 
 
@@ -590,7 +605,57 @@ def inputSciYears(yearStr):
     doInputSciYear(yearStr)
 
 
-def firstClickSearch():
+def turnBackToFirstQueryPageWhenNoResult(sciName):
+    """
+    设置no result的文件？
+    """
+    #
+    while (True):
+        # 点击右侧的选项卡，直到找不到no result的颜色
+        x, y, color = utils.findColor(cfgs.getInt("firstCondition2SearchingNoResultCheckX1"),
+                                        cfgs.getInt("firstCondition2SearchingNoResultCheckY1"),
+                                        cfgs.getInt("firstCondition2SearchingNoResultCheckX2"),
+                                        cfgs.getInt("firstCondition2SearchingNoResultCheckY2"),
+                                        cfgs.get("firstCondition2SearchingNoResultCheckColor"), 0.9)
+        #
+        if x is None and y is None:
+            # 都不为0，ok
+            logs.enhanceLog("turnBackToFirstQueryPageWhenNoResult: back to another page(researchers)")
+            time.sleep(2)
+            break
+        else:
+            # 搜索中
+            logs.enhanceLog("turnBackToFirstQueryPageWhenNoResult: try click to another page(researchers)")
+            pyautogui.click(cfgs.getInt("searchingNoResultAnotherPageClickX"),
+                            cfgs.getInt("searchingNoResultAnotherPageClickY"),
+                            interval=0.3)
+            time.sleep(2)
+
+    while (True):
+        # 点击左侧的选项卡，直到找不到no result的颜色
+        x, y, color = utils.findColor(cfgs.getInt("SearchingNoResultBackToFirstPageCheckX1"),
+                                        cfgs.getInt("SearchingNoResultBackToFirstPageCheckY1"),
+                                        cfgs.getInt("SearchingNoResultBackToFirstPageCheckX2"),
+                                        cfgs.getInt("SearchingNoResultBackToFirstPageCheckY2"),
+                                        cfgs.get("SearchingNoResultBackToFirstPageCheckColor"), 0.9)
+        #
+        if x is not None and y is not None:
+            # 都不为0，ok
+            logs.enhanceLog("turnBackToFirstQueryPageWhenNoResult: back to first page")
+            time.sleep(2)
+            break
+        else:
+            # 搜索中
+            logs.enhanceLog("turnBackToFirstQueryPageWhenNoResult: try click back to first page")
+            pyautogui.click(cfgs.getInt("searchingNoResultBackToFirstPageClickX"),
+                            cfgs.getInt("searchingNoResultBackToFirstPageClickY"),
+                            interval=0.3)
+            time.sleep(1)
+            pyautogui.moveTo(0, 0)
+            time.sleep(1)
+
+
+def firstClickSearch(sciName):
     # 点击search按钮，要么能看到searching，代表正在搜索中，要么看到左上角已经进入了搜索结果页，否则继续搜索
     while (True):
         # search页面的title是否还能找到底色（进入结果页）
@@ -606,14 +671,28 @@ def firstClickSearch():
             time.sleep(5)
             break
 
+        # 是否出现了没有搜索结果的提示
+        x2, y2, color2 = utils.findColor(cfgs.getInt("firstCondition2SearchingNoResultCheckX1"),
+                                         cfgs.getInt("firstCondition2SearchingNoResultCheckY1"),
+                                         cfgs.getInt("firstCondition2SearchingNoResultCheckX2"),
+                                         cfgs.getInt("firstCondition2SearchingNoResultCheckY2"),
+                                         cfgs.get("firstCondition2SearchingNoResultCheckColor"), 0.9)
+        #
+        if x2 is not None and y2 is not None:
+            # 都不为0，ok
+            logs.enhanceLog("first: search has no result, skip this publication %s" % sciName)
+
+            turnBackToFirstQueryPageWhenNoResult(sciName)
+            raise Exception("search has no result, try click back to home")
+
         # search按钮是否还是亮的（代表没有在搜索）
-        x2, y2, color2 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck2X1"),
+        x3, y3, color3 = utils.findColor(cfgs.getInt("firstCondition2SearchingCheck2X1"),
                                          cfgs.getInt("firstCondition2SearchingCheck2Y1"),
                                          cfgs.getInt("firstCondition2SearchingCheck2X2"),
                                          cfgs.getInt("firstCondition2SearchingCheck2Y2"),
                                          cfgs.get("firstCondition2SearchingCheck2Color"), 0.9)
         # 如果出现了未点击的搜索按钮，就选择点击
-        if x2 is not None and y2 is not None:
+        if x3 is not None and y3 is not None:
             logs.enhanceLog("first: firstCondition2SearchButtonX")
             pyautogui.click(cfgs.getInt("firstCondition2SearchButtonX"), cfgs.getInt("firstCondition2SearchButtonY"),
                             interval=0.3)
@@ -670,7 +749,7 @@ def firstQueryAndExportSciDetail(sciName):
     # 点击输入期刊名称
     inputSciName(sciName)
     # 点击搜索
-    firstClickSearch()
+    firstClickSearch(sciName)
     # 确保相关的article列表已经列出来了（搜索结果已展示）
     ensureArticleListShowsAndNoErrorPageShows(sciName)
     # 点击export
